@@ -102,7 +102,7 @@ async function cargarAdminMontajes() {
                 ` : ''}
 
                 <div style="font-size:0.72rem;color:${color};font-weight:600;display:flex;align-items:center;gap:4px;margin-bottom:8px;">
-                    📍 ${est?.nombre || 'Estación desconocida'} · ⏱️ ${mon.tiempoHoras || 0}h
+                    📍 ${est?.nombre || 'Estación desconocida'} · ⏱️ ${mon.tiempoHoras || 0}h${mon.operarioAsignado === 'operario1' ? ' · 👷 Operario 1' : mon.operarioAsignado === 'operario2' ? ' · 👷 Operario 2' : ''}
                 </div>
 
                 <div style="display:flex;gap:6px;padding-top:10px;border-top:1px solid #f1f5f9;flex-wrap:wrap;">
@@ -129,6 +129,8 @@ window.APP.adminMontajeActual = { tornilleria: [], materiales: [], piezas: [], p
     document.getElementById('adminMontajeIcono').value = '';
     document.getElementById('adminMontajeDescripcion').value = '';
     document.getElementById('adminMontajeDependeDe').value = '';
+    const selOperarioNuevo = document.getElementById('adminMontajeOperario');
+    if (selOperarioNuevo) selOperarioNuevo.value = '';
     document.getElementById('adminMontajePares').value = '';
     document.getElementById('adminMontajeInstrucciones').value = '';
     document.getElementById('adminMontajeVideo').value = '';
@@ -234,6 +236,8 @@ if (mon.pasos && Array.isArray(mon.pasos)) {
     document.getElementById('adminMontajeIcono').value = mon.icono || '';
     document.getElementById('adminMontajeDescripcion').value = mon.descripcion || '';
     document.getElementById('adminMontajeDependeDe').value = mon.dependeDe || '';
+    const selOperarioEditar = document.getElementById('adminMontajeOperario');
+    if (selOperarioEditar) selOperarioEditar.value = mon.operarioAsignado || '';
     document.getElementById('adminMontajePares').value = mon.paresRequeridos || '';
     document.getElementById('adminMontajeInstrucciones').value = mon.instrucciones || '';
     document.getElementById('adminMontajeVideo').value = mon.videoInstrucciones || '';
@@ -331,6 +335,9 @@ const data = {
     instruccionesFotos: fotos,
     pasos: pasos
 };
+
+const selOperarioGuardar = document.getElementById('adminMontajeOperario');
+if (selOperarioGuardar) data.operarioAsignado = selOperarioGuardar.value;
 
     mostrarLoading('Guardando montaje...');
     const ok = await guardarFirebase('montajes', id, data);
